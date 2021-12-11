@@ -27,10 +27,14 @@ Vue.config.getTagNamespace = getTagNamespace
 Vue.config.isUnknownElement = isUnknownElement
 
 // install platform runtime directives & components
+// 注册全局的组件和指令
+// extend将第二个参数的成员拷贝到第一个参数对象中
 extend(Vue.options.directives, platformDirectives)
 extend(Vue.options.components, platformComponents)
 
 // install platform patch function
+// 和snabbdom中的patch作用一致，将虚拟dom转换成真实dom节点
+// inBrowser判断当前环境是否是浏览器（通过判断是否有window变量）
 Vue.prototype.__patch__ = inBrowser ? patch : noop
 
 // public mount method

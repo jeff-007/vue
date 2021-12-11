@@ -14,6 +14,7 @@ export function initProvide (vm: Component) {
 }
 
 export function initInjections (vm: Component) {
+  // 将 vm _provided 属性中已经存在的 $options.inject中的属性添加到result中，并转换成响应式数据注入到vue实例中
   const result = resolveInject(vm.$options.inject, vm)
   if (result) {
     toggleObserving(false)

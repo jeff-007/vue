@@ -13,8 +13,9 @@ const idToTemplate = cached(id => {
   const el = query(id)
   return el && el.innerHTML
 })
-
+// 此处重写了 src/platforms/web/runtime/index.js 中定义的 $mount 方法
 const mount = Vue.prototype.$mount
+// $mount将生成的dom挂载到页面上
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean
@@ -22,6 +23,7 @@ Vue.prototype.$mount = function (
   el = el && query(el)
 
   /* istanbul ignore if */
+  // vue不能挂载到body或者html元素上
   if (el === document.body || el === document.documentElement) {
     process.env.NODE_ENV !== 'production' && warn(
       `Do not mount Vue to <html> or <body> - mount to normal elements instead.`
@@ -61,7 +63,7 @@ Vue.prototype.$mount = function (
       if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
         mark('compile')
       }
-
+      // 把 template 转换成 render 函数
       const { render, staticRenderFns } = compileToFunctions(template, {
         outputSourceRange: process.env.NODE_ENV !== 'production',
         shouldDecodeNewlines,
@@ -79,6 +81,8 @@ Vue.prototype.$mount = function (
       }
     }
   }
+  // 如果初始化选项中传入了 render 选项，则直接调用 src/platforms/web/runtime/index.js 中定义的 $mount 方法
+  // 运行时版本会直接调用
   return mount.call(this, el, hydrating)
 }
 

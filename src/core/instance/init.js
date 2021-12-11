@@ -14,6 +14,7 @@ let uid = 0
 
 export function initMixin (Vue: Class<Component>) {
   Vue.prototype._init = function (options?: Object) {
+    // 保存记录当前vue的实例
     const vm: Component = this
     // a uid
     vm._uid = uid++
@@ -27,6 +28,7 @@ export function initMixin (Vue: Class<Component>) {
     }
 
     // a flag to avoid this being observed
+    // 如果是 Vue 实例，不需要被 observe
     vm._isVue = true
     // merge options
     if (options && options._isComponent) {
@@ -49,13 +51,19 @@ export function initMixin (Vue: Class<Component>) {
     }
     // expose real self
     vm._self = vm
+    // vm 生命周期相关变量初始化 $children/$parent/$root/$refs
     initLifecycle(vm)
+    // vm 事件监听初始化
     initEvents(vm)
+    // vm的编译render初始化 $slots、$scopedSlots等
     initRender(vm)
+    // beforeCreate 生命钩子的回调
     callHook(vm, 'beforeCreate')
     initInjections(vm) // resolve injections before data/props
+    // vm状态的初始化，响应式处理的入口
     initState(vm)
     initProvide(vm) // resolve provide after data/props
+    // create 生命钩子的回调
     callHook(vm, 'created')
 
     /* istanbul ignore if */

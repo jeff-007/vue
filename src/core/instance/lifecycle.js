@@ -187,6 +187,7 @@ export function mountComponent (
     }
   } else {
     updateComponent = () => {
+      // vm._render() 表示调用 编译器生成的render或者是用户传入的render，返回虚拟dom，最后通过 vm._update 将虚拟dom转换为真实dom，更新到页面上
       vm._update(vm._render(), hydrating)
     }
   }

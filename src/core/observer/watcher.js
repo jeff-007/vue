@@ -59,6 +59,7 @@ export default class Watcher {
     if (options) {
       this.deep = !!options.deep
       this.user = !!options.user
+      // 是否延迟更新视图，首次渲染时需要立即更新视图所以options中未传lazy属性，this.lazy为false，而在计算属性中需要延迟更新视图
       this.lazy = !!options.lazy
       this.sync = !!options.sync
       this.before = options.before
@@ -77,6 +78,7 @@ export default class Watcher {
       ? expOrFn.toString()
       : ''
     // parse expression for getter
+    // 比如在 src/core/instance/lifecycle.js 中定义的 Watcher，expOrFn 对应的是传入的 updateComponent 函数，用于转换虚拟dom，并更新到视图
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn
     } else {
@@ -100,6 +102,8 @@ export default class Watcher {
    * Evaluate the getter, and re-collect dependencies.
    */
   get () {
+    // 每个组件都会对应一个用于渲染视图的 watcher，如果组件有嵌套，会先渲染内部的组件，所以需要先保父组件对应的watcher
+    // pushTarget 用于保存父组件对应的watcher
     pushTarget(this)
     let value
     const vm = this.vm

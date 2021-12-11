@@ -35,15 +35,21 @@ export function toggleObserving (value: boolean) {
  * collect dependencies and dispatch updates.
  */
 export class Observer {
+  // 观测对象
   value: any;
+  // 依赖对象
   dep: Dep;
+  // 实例计数器
   vmCount: number; // number of vms that have this object as root $data
 
   constructor (value: any) {
     this.value = value
     this.dep = new Dep()
     this.vmCount = 0
+    // 将实例挂载到观察对象的 __ob__ 属性上
+    // def 是对 Object.defineProperty 的封装
     def(value, '__ob__', this)
+    // 数组的响应式封装
     if (Array.isArray(value)) {
       if (hasProto) {
         protoAugment(value, arrayMethods)
@@ -52,6 +58,7 @@ export class Observer {
       }
       this.observeArray(value)
     } else {
+      // 遍历观察对象中的每一个可枚举属性，转换成 setter/getter
       this.walk(value)
     }
   }
@@ -108,10 +115,12 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
  * or the existing observer if the value already has one.
  */
 export function observe (value: any, asRootData: ?boolean): Observer | void {
+  // 判断 value 是否是对象
   if (!isObject(value) || value instanceof VNode) {
     return
   }
   let ob: Observer | void
+  // 如果 value 有 __ob__(observer对象)属性 返回
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     ob = value.__ob__
   } else if (
@@ -121,6 +130,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     Object.isExtensible(value) &&
     !value._isVue
   ) {
+    // 创建 Observer 对象，将 value 中的所有属性转换成 getter 和 setter
     ob = new Observer(value)
   }
   if (asRootData && ob) {
@@ -139,13 +149,17 @@ export function defineReactive (
   customSetter?: ?Function,
   shallow?: boolean
 ) {
+  // 创建依赖对象实例，为传入对象的当前属性收集依赖（即观察当前属性的所有watcher）
   const dep = new Dep()
 
+  // 获取 obj 的属性描述符对象，判断当前属性是否可配置
   const property = Object.getOwnPropertyDescriptor(obj, key)
   if (property && property.configurable === false) {
     return
   }
 
+  // 提供预定义的存取器函数
+  // 获取属性描述符中的 getter/setter ，如果是用户传入的 obj 已经设置了get、set，则重写 get、set，为 get、set 增加依赖收集和派发中心的功能
   // cater for pre-defined getter/setters
   const getter = property && property.get
   const setter = property && property.set
@@ -153,11 +167,13 @@ export function defineReactive (
     val = obj[key]
   }
 
+  // 判断是否递归观察子对象（深度监听），并将子对象属性都转换成 getter/setter，返回子观察对象
   let childOb = !shallow && observe(val)
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
     get: function reactiveGetter () {
+      // 如果预定义的 getter 存在（用户传入时已经设置get），则 value 等于 getter 调用的返回值
       const value = getter ? getter.call(obj) : val
       if (Dep.target) {
         dep.depend()
