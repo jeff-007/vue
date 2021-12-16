@@ -21,6 +21,7 @@ const methodsToPatch = [
 /**
  * Intercept mutating methods and emit events
  */
+// 重写数组原型中的方法，添加响应式处理
 methodsToPatch.forEach(function (method) {
   // cache original method
   const original = arrayProto[method]

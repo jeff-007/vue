@@ -51,6 +51,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
     if (isIOS) setTimeout(noop)
   }
   isUsingMicroTask = true
+  // MutationObserver (ie10以上才支持) 监听dom对象的改变，dom对象改变后以 微任务形式 执行回调函数，
 } else if (!isIE && typeof MutationObserver !== 'undefined' && (
   isNative(MutationObserver) ||
   // PhantomJS and iOS 7.x

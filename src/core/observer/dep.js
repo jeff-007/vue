@@ -55,6 +55,8 @@ export default class Dep {
 Dep.target = null
 const targetStack = []
 
+// vue 2 以后每一个组件对应一个 watcher 对象
+// 入栈并将当前 watcher 赋值给 Dep.target
 export function pushTarget (target: ?Watcher) {
   targetStack.push(target)
   Dep.target = target
