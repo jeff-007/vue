@@ -57,6 +57,7 @@ export function createCompileToFunctionFn (compile: Function): Function {
     }
 
     // compile
+    // 把模板编译为编译对象（render，staticRenderFns），字符串形式的 js 代码
     const compiled = compile(template, options)
 
     // check compilation errors/tips
@@ -90,6 +91,7 @@ export function createCompileToFunctionFn (compile: Function): Function {
     // turn code into functions
     const res = {}
     const fnGenErrors = []
+    // 把字符串形式的js代码，转换成js方法
     res.render = createFunction(compiled.render, fnGenErrors)
     res.staticRenderFns = compiled.staticRenderFns.map(code => {
       return createFunction(code, fnGenErrors)

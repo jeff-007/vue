@@ -10,6 +10,7 @@ if (!fs.existsSync('dist')) {
 
 let builds = require('./config').getAllBuilds()
 
+// 先从配置文件中读取配置，再通过命令行参数对构建配置做过滤，构建不同版本（不同用途）的vue.js
 // filter builds via command line arg
 if (process.argv[2]) {
   const filters = process.argv[2].split(',')

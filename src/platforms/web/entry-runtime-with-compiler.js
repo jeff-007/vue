@@ -56,6 +56,7 @@ Vue.prototype.$mount = function (
         return this
       }
     } else if (el) {
+      // 如果没有 template，获取 el 的 outerHTML 作为模板
       template = getOuterHTML(el)
     }
     if (template) {

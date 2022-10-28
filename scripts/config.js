@@ -38,9 +38,9 @@ const resolve = p => {
 const builds = {
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'web-runtime-cjs-dev': {
-    entry: resolve('web/entry-runtime.js'),
-    dest: resolve('dist/vue.runtime.common.dev.js'),
-    format: 'cjs',
+    entry: resolve('web/entry-runtime.js'), // 构建入口JS文件地址
+    dest: resolve('dist/vue.runtime.common.dev.js'), // 构建后的JS文件地址
+    format: 'cjs', // 构建格式，如cjs表示构建出的文件遵循CommonJS规范，es表示构建出的文件遵循ES Module规范 umd遵循UMD规范
     env: 'development',
     banner
   },

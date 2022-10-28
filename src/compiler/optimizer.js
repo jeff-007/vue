@@ -23,8 +23,10 @@ export function optimize (root: ?ASTElement, options: CompilerOptions) {
   isStaticKey = genStaticKeysCached(options.staticKeys || '')
   isPlatformReservedTag = options.isReservedTag || no
   // first pass: mark all non-static nodes.
+  // 标记静态节点
   markStatic(root)
   // second pass: mark static roots.
+  // 标记静态根节点
   markStaticRoots(root, false)
 }
 
@@ -52,6 +54,7 @@ function markStatic (node: ASTNode) {
       const child = node.children[i]
       markStatic(child)
       if (!child.static) {
+        // 如果有一个 child 不是 static，则当前 node 不是 static
         node.static = false
       }
     }

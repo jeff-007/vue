@@ -6,6 +6,7 @@ import { createCompileToFunctionFn } from './to-function'
 
 export function createCompilerCreator (baseCompile: Function): Function {
   return function createCompiler (baseOptions: CompilerOptions) {
+    // compile 核心作用：合并选项，调用 baseCompile 进行编译，记录编译时的错误，最后返回编译对象
     function compile (
       template: string,
       options?: CompilerOptions

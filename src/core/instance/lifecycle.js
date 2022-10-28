@@ -56,9 +56,12 @@ export function initLifecycle (vm: Component) {
 }
 
 export function lifecycleMixin (Vue: Class<Component>) {
+  // _update 方法的作用是把 VNode 渲染成真实的 DOM
+  // 首次渲染、数据更新时会调用
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     const prevEl = vm.$el
+    // 记录之前处理过的 vnode 对象
     const prevVnode = vm._vnode
     const restoreActiveInstance = setActiveInstance(vm)
     vm._vnode = vnode

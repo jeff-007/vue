@@ -25,6 +25,7 @@ const ALWAYS_NORMALIZE = 2
 
 // wrapper function for providing a more flexible interface
 // without getting yelled at by flow
+// createElement 内部对参数做了处理，因为在使用该函数时（即使用 h 函数创建虚拟dom）部分参数是可以缺省的
 export function createElement (
   context: Component,
   tag: any,
@@ -33,6 +34,7 @@ export function createElement (
   normalizationType: any,
   alwaysNormalize: boolean
 ): VNode | Array<VNode> {
+  // 判断 data 参数是否缺省，如果缺省则将data属性赋值给 children
   if (Array.isArray(data) || isPrimitive(data)) {
     normalizationType = children
     children = data
@@ -88,14 +90,17 @@ export function _createElement (
     children.length = 0
   }
   if (normalizationType === ALWAYS_NORMALIZE) {
+    // 返回一维数组，处理用户手写的 render
     children = normalizeChildren(children)
   } else if (normalizationType === SIMPLE_NORMALIZE) {
+    // 把二维数组转换成一维数组
     children = simpleNormalizeChildren(children)
   }
   let vnode, ns
   if (typeof tag === 'string') {
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
+    // 是否是 html 的保留标签
     if (config.isReservedTag(tag)) {
       // platform built-in elements
       if (process.env.NODE_ENV !== 'production' && isDef(data) && isDef(data.nativeOn) && data.tag !== 'component') {

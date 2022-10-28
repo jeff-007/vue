@@ -34,6 +34,7 @@ import {
 
 // inline hooks to be invoked on component VNodes during patch
 const componentVNodeHooks = {
+  // 创建组件的init钩子函数最终在组件的patch过程中调用
   init (vnode: VNodeWithData, hydrating: boolean): ?boolean {
     if (
       vnode.componentInstance &&
@@ -44,9 +45,10 @@ const componentVNodeHooks = {
       const mountedNode: any = vnode // work around flow
       componentVNodeHooks.prepatch(mountedNode, mountedNode)
     } else {
+      // 创建组件实例
       const child = vnode.componentInstance = createComponentInstanceForVnode(
         vnode,
-        activeInstance
+        activeInstance // 当前组件的父组件对象，（Vue实例 ）
       )
       child.$mount(hydrating ? vnode.elm : undefined, hydrating)
     }
@@ -112,6 +114,7 @@ export function createComponent (
   const baseCtor = context.$options._base
 
   // plain options object: turn it into a constructor
+  // 如果 Ctor 不是一个构造函数，是一个对象，使用 Vue.extend() 创造一个子组件构造函数
   if (isObject(Ctor)) {
     Ctor = baseCtor.extend(Ctor)
   }
@@ -183,10 +186,13 @@ export function createComponent (
   }
 
   // install component management hooks onto the placeholder node
+  // 安装组件的钩子函数 init/prepatch/insert/destroy
   installComponentHooks(data)
 
   // return a placeholder vnode
   const name = Ctor.options.name || tag
+  // 创建自定义组件的 VNode，设置自定义组件的名字
+  // 记录 this.componentOptions = componentOptions
   const vnode = new VNode(
     `vue-component-${Ctor.cid}${name ? `-${name}` : ''}`,
     data, undefined, undefined, undefined, context,
@@ -222,10 +228,14 @@ export function createComponentInstanceForVnode (
     options.render = inlineTemplate.render
     options.staticRenderFns = inlineTemplate.staticRenderFns
   }
+  // 创建组件实例
+  // componentOptions 为Vnode构造函数中的属性，创建组件实例的Vnode对象时会传入，Ctor中保存了当前组件的构造函数
   return new vnode.componentOptions.Ctor(options)
 }
 
 function installComponentHooks (data: VNodeData) {
+  // 用户可以传递自定义钩子函数
+  // 把用户传入的自定义钩子函数和 componentVNodeHooks 中预定义的钩子函数合并
   const hooks = data.hook || (data.hook = {})
   for (let i = 0; i < hooksToMerge.length; i++) {
     const key = hooksToMerge[i]
