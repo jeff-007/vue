@@ -48,7 +48,7 @@ export function initGlobalAPI (Vue: GlobalAPI) {
 
   // 2.6 explicit observable API
   // 将一个对象设置成响应式
-  Vue.observable = <T>(obj: T): T => {
+  Vue.observable = <>(obj: T): T => {
     observe(obj)
     return obj
   }
@@ -63,6 +63,7 @@ export function initGlobalAPI (Vue: GlobalAPI) {
   // components with in Weex's multi-instance scenarios.
   Vue.options._base = Vue
 
+  {/* 把一些内置组件扩展到 Vue.options.components 上，Vue 的内置组件目前有 <keep-alive>、<transition> 和 <transition-group> 组件 */}
   extend(Vue.options.components, builtInComponents)
 
   // 注册 Vue.use() 用来注册插件

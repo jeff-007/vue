@@ -62,6 +62,9 @@ export function initState (vm: Component) {
   }
 }
 
+// 初始化props完成两部分
+// 一是调用 defineReactive 方法把每个 prop 对应的值变成响应式，可以通过 vm._props.xxx 访问到定义 props 中对应的属性
+// 二是通过 proxy 把 vm._props.xxx 的访问代理到 vm.xxx 上
 function initProps (vm: Component, propsOptions: Object) {
   const propsData = vm.$options.propsData || {}
   const props = vm._props = {}
@@ -148,10 +151,12 @@ function initData (vm: Component) {
         vm
       )
     } else if (!isReserved(key)) {
+      // 通过 proxy 把每一个值 vm._data.xxx 代理到 vm.xxx 上
       proxy(vm, `_data`, key)
     }
   }
   // 响应式处理入口
+  // 调用 observe 观测整个 data 的变化，把 data 也变成响应式，可以通过 vm._data.xxx 访问到定义 data 返回函数中对应的属性
   // observe data
   observe(data, true /* asRootData */)
 }

@@ -111,10 +111,13 @@ export function createComponent (
     return
   }
 
+  // src/core/global-api/index.js 中的 initGlobalAPI 中定义 Vue.options._base = Vue
+  // src/core/instance/init.js 里 Vue 原型上的 _init 函数中定义 vm.$options = mergeOptions(resolveConstructorOptions(vm.constructor),  options || {}, vm)
   const baseCtor = context.$options._base
 
   // plain options object: turn it into a constructor
   // 如果 Ctor 不是一个构造函数，是一个对象，使用 Vue.extend() 创造一个子组件构造函数
+  // Vue.extend 函数的定义，在 src/core/global-api/extend.js 中
   if (isObject(Ctor)) {
     Ctor = baseCtor.extend(Ctor)
   }
@@ -129,6 +132,7 @@ export function createComponent (
   }
 
   // async component
+  // 异步组件cid为undefined
   let asyncFactory
   if (isUndef(Ctor.cid)) {
     asyncFactory = Ctor
@@ -193,6 +197,7 @@ export function createComponent (
   const name = Ctor.options.name || tag
   // 创建自定义组件的 VNode，设置自定义组件的名字
   // 记录 this.componentOptions = componentOptions
+  // 通过 new VNode 实例化一个 vnode 并返回。需要注意的是和普通元素节点的 vnode 不同，组件的 vnode 是没有 children 的
   const vnode = new VNode(
     `vue-component-${Ctor.cid}${name ? `-${name}` : ''}`,
     data, undefined, undefined, undefined, context,
@@ -218,9 +223,9 @@ export function createComponentInstanceForVnode (
   parent: any
 ): Component {
   const options: InternalComponentOptions = {
-    _isComponent: true,
+    _isComponent: true, // 为 true 表示它是一个组件
     _parentVnode: vnode,
-    parent
+    parent // 当前激活的组件实例
   }
   // check inline-template render functions
   const inlineTemplate = vnode.data.inlineTemplate

@@ -108,6 +108,10 @@ export default class Watcher {
     let value
     const vm = this.vm
     try {
+      // 在组件初始化时挂载阶段，会生成一个渲染 watcher，并传入 updateComponent，这里的 getter 就是 updateComponent
+      // 此处执行了 updateComponent， 即 vm._update(vm._render(), hydrating)
+      // 执行vm._render() 生成VNode时，会访问 vm 上的数据，即触发了数据对象的 getter
+      // 即 在 defineReactive 中，触发了get中的 dep.depend()
       value = this.getter.call(vm, vm)
     } catch (e) {
       if (this.user) {
@@ -130,6 +134,8 @@ export default class Watcher {
   /**
    * Add a dependency to this directive.
    */
+  // 把当前的 watcher 实例订阅到当前访问数据持有的 dep 的 subs 中（观察者模式）
+  // 为后续数据变化时候能通知到哪些 subs 做准备
   addDep (dep: Dep) {
     const id = dep.id
     if (!this.newDepIds.has(id)) {

@@ -21,6 +21,9 @@ import {
 export let activeInstance: any = null
 export let isUpdatingChildComponent: boolean = false
 
+// activeInstance 保持当前上下文的 Vue 实例
+// JavaScript 是一个单线程，Vue 整个初始化是一个深度遍历的过程
+// 在实例化子组件的过程中，它需要知道当前上下文的 Vue 实例是什么，并把它作为子组件的父 Vue 实例
 export function setActiveInstance(vm: Component) {
   const prevActiveInstance = activeInstance
   activeInstance = vm
@@ -64,6 +67,8 @@ export function lifecycleMixin (Vue: Class<Component>) {
     // 记录之前处理过的 vnode 对象
     const prevVnode = vm._vnode
     const restoreActiveInstance = setActiveInstance(vm)
+    // 这个 vnode 是通过 vm._render() 返回的组件渲染 VNode
+    // vm._vnode 和 vm.$vnode 的关系就是一种父子关系，vm._vnode.parent === vm.$vnode
     vm._vnode = vnode
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
@@ -195,6 +200,8 @@ export function mountComponent (
     }
   }
 
+  // 实例化一个渲染Watcher，在它的回调函数中调用updateComponent方法，该方法通过vm._render 方法先生成虚拟 Node，最终调用 vm._update 更新 DOM
+  // Watcher 在这里有两个作用，一是初始化的时候执行回调函数，另一个是当 vm 实例中的监测的数据发生变化的时候执行回调函数
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
@@ -209,6 +216,8 @@ export function mountComponent (
 
   // manually mounted instance, call mounted on self
   // mounted is called for render-created child components in its inserted hook
+  // vm.$vnode 表示 Vue 实例的父虚拟 Node，所以它为 Null 则表示当前是根 Vue 的实例
+  // 函数最后判断为根节点的时候设置 vm._isMounted 为 true， 表示这个实例已经挂载了
   if (vm.$vnode == null) {
     vm._isMounted = true
     callHook(vm, 'mounted')

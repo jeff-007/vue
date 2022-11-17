@@ -28,6 +28,7 @@ export function toggleObserving (value: boolean) {
   shouldObserve = value
 }
 
+// 给对象的属性添加 getter 和 setter，用于依赖收集和派发更新
 /**
  * Observer class that is attached to each observed
  * object. Once attached, the observer converts the target
@@ -176,7 +177,7 @@ export function defineReactive (
       // 如果预定义的 getter 存在（用户传入时已经设置get），则 value 等于 getter 调用的返回值
       const value = getter ? getter.call(obj) : val
       // 如果存在当前依赖目标（即 watcher 对象），则建立依赖
-      // 依赖收集：访问该属性是，会收集该属性的依赖，即把依赖该属性的 watcher 对象添加到 Dep 的 subs 数组中，将来属性值变化时，会通知所有的 watcher
+      // 依赖收集：访问该属性时，会收集该属性的依赖，即把依赖该属性的 watcher 对象添加到 Dep 的 subs 数组中，将来属性值变化时，会通知所有的 watcher
       if (Dep.target) {
         // depend 方法添加依赖
         dep.depend()

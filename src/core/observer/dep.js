@@ -10,6 +10,10 @@ let uid = 0
  * A dep is an observable that can have multiple
  * directives subscribing to it.
  */
+// target 全局唯一 Watcher，同一时间只能有一个全局的 Watcher 被计算
+// subs 也是 Watcher 的数组
+// Dep 实际上就是对 Watcher 的一种管理，Dep 脱离 Watcher 单独存在是没有意义的
+// Watcher 定义 src/core/observer/watcher.js
 export default class Dep {
   static target: ?Watcher;
   id: number;
@@ -55,8 +59,8 @@ export default class Dep {
 Dep.target = null
 const targetStack = []
 
-// vue 2 以后每一个组件对应一个 watcher 对象
-// 入栈并将当前 watcher 赋值给 Dep.target
+// vue 2 以后每一个组件对应一个渲染 watcher 对象
+// 入栈并将当前 watcher 赋值给 Dep.target，Dep.target用于对象数据依赖收集等
 export function pushTarget (target: ?Watcher) {
   targetStack.push(target)
   Dep.target = target

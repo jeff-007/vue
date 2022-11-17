@@ -47,11 +47,11 @@ export function createElement (
 }
 
 export function _createElement (
-  context: Component,
-  tag?: string | Class<Component> | Function | Object,
-  data?: VNodeData,
-  children?: any,
-  normalizationType?: number
+  context: Component, // VNode上下文环境
+  tag?: string | Class<Component> | Function | Object, // 标签
+  data?: VNodeData, // VNode数据
+  children?: any, // VNode 的子节点，需要被规范为标准的 VNode 数组
+  normalizationType?: number // 子节点规范的类型，类型不同规范的方法也就不一样，它主要是参考 render 函数是编译生成的还是用户手写的。
 ): VNode | Array<VNode> {
   if (isDef(data) && isDef((data: any).__ob__)) {
     process.env.NODE_ENV !== 'production' && warn(
@@ -114,6 +114,7 @@ export function _createElement (
         undefined, undefined, context
       )
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
+      // 如果是为已注册的组件名，则通过 createComponent 创建一个组件类型的 VNode
       // component
       vnode = createComponent(Ctor, data, context, children, tag)
     } else {

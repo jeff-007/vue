@@ -402,6 +402,9 @@ export function mergeOptions (
   normalizeInject(child, vm)
   normalizeDirectives(child)
 
+  // 先递归把 extends 和 mixins 合并到 parent 上
+  // 然后遍历 parent，调用 mergeField
+  // 然后再遍历 child，如果 key 不在 parent 的自身属性上，则调用 mergeField
   // Apply extends and mixins on the child options,
   // but only if it is a raw options object that isn't
   // the result of another mergeOptions call.
@@ -427,6 +430,7 @@ export function mergeOptions (
       mergeField(key)
     }
   }
+  // 针对不同的key执行不同的合并策略
   function mergeField (key) {
     const strat = strats[key] || defaultStrat
     options[key] = strat(parent[key], child[key], vm, key)

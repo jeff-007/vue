@@ -161,8 +161,11 @@ function callActivatedHooks (queue) {
  * Jobs with duplicate IDs will be skipped unless it's
  * pushed when the queue is being flushed.
  */
+// Vue 派发更新时，并不会每次数据改变都触发 watcher 的回调
+// 而是把这些 watcher 先添加到一个队列里，然后在 nextTick 后执行 flushSchedulerQueue
 export function queueWatcher (watcher: Watcher) {
   const id = watcher.id
+  // has 对象保证同一个 Watcher 只添加一次
   if (has[id] == null) {
     has[id] = true
     if (!flushing) {

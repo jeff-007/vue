@@ -35,6 +35,7 @@ extend(Vue.options.components, platformComponents)
 // install platform patch function
 // 和snabbdom中的patch作用一致，将虚拟dom转换成真实dom节点
 // inBrowser判断当前环境是否是浏览器（通过判断是否有window变量）
+// 在服务端渲染中，没有真实的浏览器 DOM 环境，不需要把 VNode 最终转换成 DOM，因此是一个空函数 noop
 Vue.prototype.__patch__ = inBrowser ? patch : noop
 
 // public mount method
